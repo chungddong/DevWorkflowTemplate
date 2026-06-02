@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>새 프로젝트 이름 대시보드</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f3f5f8;
+      --panel: #ffffff;
+      --panel-soft: #f8fafc;
+      --text: #16202f;
+      --muted: #687386;
+      --line: #d9e1ec;
+      --blue: #2563a8;
+      --teal: #087f8c;
+      --green: #217a55;
+      --amber: #a15c00;
+      --red: #b42318;
+      --gray: #667085;
+      --shadow: 0 18px 46px rgba(22, 32, 47, 0.10);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        linear-gradient(180deg, #eaf1f8 0, rgba(234, 241, 248, 0) 360px),
+        var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", "Malgun Gothic", Arial, sans-serif;
+      line-height: 1.55;
+    }
+    main {
+      width: min(1240px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 10px; font-size: 34px; letter-spacing: 0; }
+    h2 { margin: 0 0 14px; font-size: 20px; }
+    h3 { margin-bottom: 8px; font-size: 17px; }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.5fr 0.8fr;
+      gap: 18px;
+      align-items: stretch;
+      margin-bottom: 18px;
+    }
+    .hero-panel, .progress-panel, .metric, .tab-panel, .goal-card, .milestone-card {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+    .hero-panel {
+      padding: 28px;
+    }
+    .hero-panel p {
+      max-width: 760px;
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+    .phase {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .phase strong {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .progress-panel {
+      display: grid;
+      place-items: center;
+      padding: 22px;
+    }
+    .donut {
+      width: 176px;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: conic-gradient(var(--blue) 29%, #e3e9f2 0);
+      position: relative;
+    }
+    .donut::after {
+      content: "";
+      width: 124px;
+      aspect-ratio: 1;
+      position: absolute;
+      border-radius: 50%;
+      background: var(--panel);
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+    .donut-value {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+    .donut-value strong {
+      display: block;
+      font-size: 34px;
+      line-height: 1;
+    }
+    .donut-value span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .metric {
+      padding: 16px;
+      box-shadow: none;
+    }
+    .metric small {
+      display: block;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .metric strong {
+      display: block;
+      font-size: 28px;
+      line-height: 1;
+    }
+    .tabs {
+      display: grid;
+      gap: 0;
+    }
+    .tabs input { display: none; }
+    .tab-labels {
+      display: flex;
+      gap: 8px;
+      padding: 8px;
+      background: #e8eef6;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow-x: auto;
+    }
+    .tab-labels label {
+      min-width: max-content;
+      padding: 9px 13px;
+      border-radius: 6px;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    #tab-overview:checked ~ .tab-labels label[for="tab-overview"],
+    #tab-milestones:checked ~ .tab-labels label[for="tab-milestones"],
+    #tab-todos:checked ~ .tab-labels label[for="tab-todos"],
+    #tab-docs:checked ~ .tab-labels label[for="tab-docs"] {
+      background: var(--panel);
+      color: var(--blue);
+      box-shadow: 0 1px 3px rgba(22, 32, 47, 0.12);
+    }
+    .tab-panel {
+      display: none;
+      padding: 18px;
+      box-shadow: none;
+    }
+    #tab-overview:checked ~ .panels #panel-overview,
+    #tab-milestones:checked ~ .panels #panel-milestones,
+    #tab-todos:checked ~ .panels #panel-todos,
+    #tab-docs:checked ~ .panels #panel-docs {
+      display: block;
+    }
+    .goal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .goal-card, .milestone-card {
+      padding: 16px;
+      box-shadow: none;
+    }
+    .card-kicker {
+      color: var(--teal);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .goal-card p, .milestone-card p {
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .milestone-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .milestone-card header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .progress-row {
+      display: grid;
+      grid-template-columns: 1fr 48px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .progress-row strong {
+      text-align: right;
+      color: var(--blue);
+      font-size: 14px;
+    }
+    .progress-track {
+      height: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e3e9f2;
+    }
+    .progress-track span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--teal), var(--blue));
+    }
+    .task-count {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .task-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .task {
+      display: grid;
+      grid-template-columns: 14px 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 7px 0;
+      border-top: 1px solid #eef2f7;
+    }
+    .task-marker {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--gray);
+    }
+    .task-done .task-marker { background: var(--green); }
+    .task-in_progress .task-marker { background: var(--blue); }
+    .task-todo .task-marker { background: var(--gray); }
+    .task em {
+      color: var(--muted);
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 700;
+    }
+    .task-done span:nth-child(2) {
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+    .badge, .priority {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid currentColor;
+    }
+    .badge-done, .badge-active { color: var(--green); background: #edf8f2; }
+    .badge-in_progress { color: var(--blue); background: #eef5ff; }
+    .badge-todo { color: var(--gray); background: #f2f4f7; }
+    .badge-blocked { color: var(--amber); background: #fff7e6; }
+    .priority-high { color: var(--red); background: #fff1f0; }
+    .priority-medium { color: var(--amber); background: #fff7e6; }
+    .priority-low { color: var(--gray); background: #f2f4f7; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      background: var(--panel-soft);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    tr:last-child td { border-bottom: 0; }
+    .todo-title { font-weight: 700; }
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .doc-link {
+      display: grid;
+      gap: 4px;
+      padding: 13px;
+      color: var(--text);
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-soft);
+    }
+    .doc-link span { font-weight: 800; }
+    .doc-link small { color: var(--muted); overflow-wrap: anywhere; }
+    .notice {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    @media (max-width: 900px) {
+      .hero, .metrics, .goal-grid, .milestone-grid, .doc-grid {
+        grid-template-columns: 1fr;
+      }
+      h1 { font-size: 28px; }
+      .tab-panel { padding: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <div class="hero-panel">
+        <h1>새 프로젝트 이름</h1>
+        <p>프로젝트 설명을 작성합니다.</p>
+        <div class="phase">
+          <span class="badge badge-planning">planning</span>
+          <strong>초기 기획</strong>
+        </div>
+      </div>
+      <aside class="progress-panel">
+        <div class="donut" aria-label="전체 진행률 29%">
+          <div class="donut-value">
+            <strong>29%</strong>
+            <span>전체 진행률</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="metrics">
+      <div class="metric"><small>마일스톤 작업</small><strong>2/7</strong></div>
+      <div class="metric"><small>프로젝트 목표</small><strong>2</strong></div>
+      <div class="metric"><small>남은 TODO</small><strong>4</strong></div>
+      <div class="metric"><small>높은 우선순위</small><strong>2</strong></div>
+    </section>
+
+    <section class="tabs">
+      <input checked id="tab-overview" name="dashboard-tabs" type="radio">
+      <input id="tab-milestones" name="dashboard-tabs" type="radio">
+      <input id="tab-todos" name="dashboard-tabs" type="radio">
+      <input id="tab-docs" name="dashboard-tabs" type="radio">
+      <div class="tab-labels">
+        <label for="tab-overview">개요</label>
+        <label for="tab-milestones">마일스톤</label>
+        <label for="tab-todos">TODO</label>
+        <label for="tab-docs">문서</label>
+      </div>
+      <div class="panels">
+        <div class="tab-panel" id="panel-overview">
+          <h2>목표</h2>
+          <div class="goal-grid">
+        <article class="goal-card">
+          <div class="card-kicker">goal-001</div>
+          <h3>첫 번째 프로젝트 목표</h3>
+          <p>프로젝트의 핵심 목표를 작성합니다.</p>
+          <span class="badge badge-active">활성</span>
+        </article>
+        
+
+        <article class="goal-card">
+          <div class="card-kicker">goal-002</div>
+          <h3>두 번째 프로젝트 목표</h3>
+          <p>다른 주요 목표를 작성합니다.</p>
+          <span class="badge badge-active">활성</span>
+        </article>
+        </div>
+        </div>
+        <div class="tab-panel" id="panel-milestones">
+          <h2>마일스톤 진행</h2>
+          <div class="milestone-grid">
+            <article class="milestone-card">
+              <header>
+                <div>
+                  <div class="card-kicker">ms-001</div>
+                  <h3>프로젝트 기반 구성</h3>
+                </div>
+                <span class="badge badge-in_progress">진행 중</span>
+              </header>
+              <p>프로젝트를 빌드하고 실행할 수 있는 기본 상태로 만듭니다.</p>
+              <div class="progress-row">
+                <div class="progress-track"><span style="width: 50%"></span></div>
+                <strong>50%</strong>
+              </div>
+              <div class="task-count">2/4 작업 완료</div>
+              <ul class="task-list">
+            <li class="task task-done">
+              <span class="task-marker"></span>
+              <span>README 작성</span>
+              <em>완료</em>
+            </li>
+            
+
+            <li class="task task-done">
+              <span class="task-marker"></span>
+              <span>.gitignore 작성</span>
+              <em>완료</em>
+            </li>
+            
+
+            <li class="task task-todo">
+              <span class="task-marker"></span>
+              <span>개발 환경 세팅 문서 작성</span>
+              <em>예정</em>
+            </li>
+            
+
+            <li class="task task-todo">
+              <span class="task-marker"></span>
+              <span>프로젝트 구조 문서 작성</span>
+              <em>예정</em>
+            </li>
+            </ul>
+            </article>
+            
+
+            <article class="milestone-card">
+              <header>
+                <div>
+                  <div class="card-kicker">ms-002</div>
+                  <h3>핵심 기능 구현</h3>
+                </div>
+                <span class="badge badge-todo">예정</span>
+              </header>
+              <p>프로젝트의 핵심 기능을 구현합니다.</p>
+              <div class="progress-row">
+                <div class="progress-track"><span style="width: 0%"></span></div>
+                <strong>0%</strong>
+              </div>
+              <div class="task-count">0/3 작업 완료</div>
+              <ul class="task-list">
+            <li class="task task-todo">
+              <span class="task-marker"></span>
+              <span>핵심 기능 요구사항 정리</span>
+              <em>예정</em>
+            </li>
+            
+
+            <li class="task task-todo">
+              <span class="task-marker"></span>
+              <span>핵심 기능 구현</span>
+              <em>예정</em>
+            </li>
+            
+
+            <li class="task task-todo">
+              <span class="task-marker"></span>
+              <span>기본 동작 검증</span>
+              <em>예정</em>
+            </li>
+            </ul>
+            </article>
+            </div>
+        </div>
+        <div class="tab-panel" id="panel-todos">
+          <h2>TODO 현황</h2>
+          <table>
+            <thead><tr><th>ID</th><th>작업</th><th>상태</th><th>우선순위</th></tr></thead>
+            <tbody>
+        <tr>
+          <td>todo-001</td>
+          <td class="todo-title">프로젝트 이름과 설명 수정</td>
+          <td><span class="badge badge-todo">예정</span></td>
+          <td><span class="priority priority-high">높음</span></td>
+        </tr>
+        
+
+        <tr>
+          <td>todo-002</td>
+          <td class="todo-title">목표와 마일스톤을 실제 프로젝트에 맞게 수정</td>
+          <td><span class="badge badge-todo">예정</span></td>
+          <td><span class="priority priority-high">높음</span></td>
+        </tr>
+        
+
+        <tr>
+          <td>todo-003</td>
+          <td class="todo-title">개발 환경 세팅 문서 작성</td>
+          <td><span class="badge badge-todo">예정</span></td>
+          <td><span class="priority priority-medium">보통</span></td>
+        </tr>
+        
+
+        <tr>
+          <td>todo-004</td>
+          <td class="todo-title">프로젝트 구조 문서 작성</td>
+          <td><span class="badge badge-todo">예정</span></td>
+          <td><span class="priority priority-medium">보통</span></td>
+        </tr>
+        </tbody>
+          </table>
+        </div>
+        <div class="tab-panel" id="panel-docs">
+          <h2>주요 문서</h2>
+          <div class="doc-grid">
+        <a class="doc-link" href="DEVELOPMENT_RULES.md">
+          <span>개발 규칙</span>
+          <small>DEVELOPMENT_RULES.md</small>
+        </a>
+        
+
+        <a class="doc-link" href="README.md">
+          <span>문서 인덱스</span>
+          <small>README.md</small>
+        </a>
+        
+
+        <a class="doc-link" href="setup.md">
+          <span>환경 세팅</span>
+          <small>setup.md</small>
+        </a>
+        
+
+        <a class="doc-link" href="architecture.md">
+          <span>프로젝트 구조</span>
+          <small>architecture.md</small>
+        </a>
+        
+
+        <a class="doc-link" href="notes/template-feedback.md">
+          <span>템플릿 개선 피드백</span>
+          <small>notes/template-feedback.md</small>
+        </a>
+        </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="notice">이 파일은 docs/data/project-status.yaml을 기반으로 자동 생성되었습니다. 직접 수정하지 말고 tools/generate_dashboard.py를 실행해 갱신하세요.</p>
+  </main>
+</body>
+</html>

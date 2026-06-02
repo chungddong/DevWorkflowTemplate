@@ -1,0 +1,76 @@
+project:
+  name: 새 프로젝트 이름
+  status: planning
+  phase: 초기 기획
+  summary: 프로젝트 설명을 작성합니다.
+
+dashboard:
+  generated_by: tools/generate_dashboard.py
+  output: docs/DASHBOARD.html
+  note: DASHBOARD.html은 자동 생성 결과물이므로 직접 수정하지 않습니다.
+
+goals:
+  - id: goal-001
+    title: 첫 번째 프로젝트 목표
+    status: active
+    description: 프로젝트의 핵심 목표를 작성합니다.
+  - id: goal-002
+    title: 두 번째 프로젝트 목표
+    status: active
+    description: 다른 주요 목표를 작성합니다.
+
+milestones:
+  - id: ms-001
+    title: 프로젝트 기반 구성
+    status: in_progress
+    objective: 프로젝트를 빌드하고 실행할 수 있는 기본 상태로 만듭니다.
+    tasks:
+      - title: README 작성
+        status: done
+      - title: .gitignore 작성
+        status: done
+      - title: 개발 환경 세팅 문서 작성
+        status: todo
+      - title: 프로젝트 구조 문서 작성
+        status: todo
+  - id: ms-002
+    title: 핵심 기능 구현
+    status: todo
+    objective: 프로젝트의 핵심 기능을 구현합니다.
+    tasks:
+      - title: 핵심 기능 요구사항 정리
+        status: todo
+      - title: 핵심 기능 구현
+        status: todo
+      - title: 기본 동작 검증
+        status: todo
+
+todos:
+  - id: todo-001
+    title: 프로젝트 이름과 설명 수정
+    status: todo
+    priority: high
+  - id: todo-002
+    title: 목표와 마일스톤을 실제 프로젝트에 맞게 수정
+    status: todo
+    priority: high
+  - id: todo-003
+    title: 개발 환경 세팅 문서 작성
+    status: todo
+    priority: medium
+  - id: todo-004
+    title: 프로젝트 구조 문서 작성
+    status: todo
+    priority: medium
+
+links:
+  - title: 개발 규칙
+    path: DEVELOPMENT_RULES.md
+  - title: 문서 인덱스
+    path: README.md
+  - title: 환경 세팅
+    path: setup.md
+  - title: 프로젝트 구조
+    path: architecture.md
+  - title: 템플릿 개선 피드백
+    path: notes/template-feedback.md

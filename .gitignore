@@ -1,0 +1,27 @@
+# Build and output directories
+build/
+out/
+dist/
+coverage/
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Environment files
+.env
+.env.*
+!.env.example
